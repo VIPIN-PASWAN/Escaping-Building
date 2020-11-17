@@ -2,7 +2,9 @@
 
 #pragma once
 
+
 #include "CoreMinimal.h"
+#include "DrawDebugHelpers.h"              //To include DrawDebugLine()
 #include "Components/ActorComponent.h"
 #include "Grabber_.generated.h"
 
@@ -25,4 +27,6 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 		
+private:
+	float Reach = 100.f;
 };

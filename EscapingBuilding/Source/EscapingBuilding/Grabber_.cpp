@@ -33,15 +33,23 @@ void UGrabber_::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 	//Get player view point
 	FVector PlayerViewPointLocation;
-	FRotator PlayereViewPointRotation;
-	// ray-cast 
+	FRotator PlayerViewPointRotation;
+	
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
 
-	//see what we hits
 
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayereViewPointRotation);
+	// UE_LOG(LogTemp, Warning, TEXT("Location:%s Rotaion: %s"), *PlayerViewPointLocation.ToString(), *PlayereViewPointRotation.ToString());
 
-	//FString ObjectName = GetOwner()->GetName();
-	//FString ObjectPos = GetOwner()->GetTransform().GetLocation().ToString();
-	UE_LOG(LogTemp, Warning, TEXT("Location:%s Rotaion: %s"), *PlayerViewPointLocation.ToString(), *PlayereViewPointRotation.ToString());
+	FVector LineTraceEnd = PlayerViewPointLocation + (PlayerViewPointRotation.Vector() * Reach);
+    
+	DrawDebugLine(GetWorld(),
+		PlayerViewPointLocation,
+		LineTraceEnd,
+		FColor(255, 0, 0),
+		false,
+		0.f,
+		0.f,
+		10.f
+		);
 }
 
