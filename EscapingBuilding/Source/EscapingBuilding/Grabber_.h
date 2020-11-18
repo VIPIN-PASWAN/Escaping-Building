@@ -2,12 +2,12 @@
 
 #pragma once
 
-
+#include "Components/InputComponent.h"
 #include "CoreMinimal.h"
 #include "DrawDebugHelpers.h"              //To include DrawDebugLine()
 #include "Components/ActorComponent.h"
+#include "PHYSICSENGINE/PhysicsHandleComponent.h"
 #include "Grabber_.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPINGBUILDING_API UGrabber_ : public UActorComponent
@@ -29,4 +29,10 @@ public:
 		
 private:
 	float Reach = 100.f;
+
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+
+	UInputComponent* InputComponent = nullptr;
+
+	void Grab();
 };
