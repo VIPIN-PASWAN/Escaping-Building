@@ -12,7 +12,6 @@ UGrabber_::UGrabber_()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 // Called when the game starts
 void UGrabber_::BeginPlay()
 {
@@ -25,12 +24,8 @@ void UGrabber_::FindPhysicsHandleComponent() {
 
 	//looking for attachment of Physics Handle
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (PhysicsHandle)
-	{
-	}
-	else {
+	if (PhysicsHandle==nullptr)
 		UE_LOG(LogTemp, Error, TEXT("%s physics handle missing"), *(GetOwner()->GetName()));
-	}
 }
 
 void UGrabber_::SetupInputComponent()
@@ -55,9 +50,19 @@ void UGrabber_::SetupInputComponent()
 void UGrabber_::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	//Get player view point
+	FVector PlayerViewPointLocation;
+	FRotator PlayerViewPointRotation;
 
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
+
+	FVector LineTraceEnd = PlayerViewPointLocation + (PlayerViewPointRotation.Vector() * Reach);
+
+	if (PhysicsHandle->GrabbedComponent) {
+		///move the object that is holded
+		PhysicsHandle->SetTargetLocationAndRotation(LineTraceEnd, PlayerViewPointRotation);
+	}
 	
-	///move the object that is holded
 
 }
 
@@ -66,17 +71,22 @@ void UGrabber_::Grab()
 	UE_LOG(LogTemp, Warning, TEXT("Grab Pressed....."));
 
 	///LINE TRACE & if phy. handle is attached
-	GetFirstPhysicsBodyInRech();
+	auto HitResult = GetFirstPhysicsBodyInRech();
+	auto ComponentToGrab = HitResult.GetComponent();
+	auto ActorHit = HitResult.GetActor();
 
-	///Try and reach any actor with physics body collision channnel
-
-	//if it hit something the attach phy. handle
+	if (ActorHit)
+	{
+		///Try and reach any actor with physics body collision channnel
+		PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation());
+		//if it hit something the attach phy. handle
+	}
 }
 
 void UGrabber_::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab Released....."));
-
+	PhysicsHandle->ReleaseComponent();
 }
 
 
@@ -105,5 +115,5 @@ const FHitResult UGrabber_::GetFirstPhysicsBodyInRech()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s ::LineTrace "), *(ActorHit->GetName()));
 	}
-	return FHitResult();
+	return Hit;
 }

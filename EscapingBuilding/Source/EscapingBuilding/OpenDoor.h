@@ -42,4 +42,5 @@ protected:
     AActor* ActorThatOpen;
 	AActor* Owner;
 
+	float GetTotalMassOfActorOnPlate();
 };
