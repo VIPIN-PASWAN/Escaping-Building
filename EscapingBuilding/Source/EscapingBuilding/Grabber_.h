@@ -28,11 +28,20 @@ public:
 
 		
 private:
-	float Reach = 100.f;
+	float Reach = 100.f;      ///how far the player can reach/cover
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 
 	UInputComponent* InputComponent = nullptr;
 
-	void Grab();
+	void Grab();              ///Grab what in way/reach 
+
+	void Release();           ///called when Grab is release
+
+	void FindPhysicsHandleComponent();
+
+	void SetupInputComponent();
+
+	///return hit for first phy. body
+	const FHitResult GetFirstPhysicsBodyInRech();
 };
